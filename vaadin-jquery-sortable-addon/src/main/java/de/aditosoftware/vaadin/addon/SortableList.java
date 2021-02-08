@@ -1,12 +1,20 @@
 package de.aditosoftware.vaadin.addon;
 
-import com.vaadin.annotations.JavaScript;
 import com.vaadin.ui.*;
+import de.aditosoftware.vaadin.addon.client.shared.*;
 
 import java.util.*;
 
 public class SortableList extends AbstractLayout
 {
+  public SortableList(SortableOptions pOptions)
+  {
+    getState().options = pOptions;
+  }
+
+  /**
+   * Holds all registered components of this layout.
+   */
   private final List<Component> components = new LinkedList<>();
 
   @Override
@@ -71,13 +79,17 @@ public class SortableList extends AbstractLayout
   }
 
   @Override
-  public void addComponent(Component c) {
+  public void addComponent(Component c)
+  {
     // Add to components before calling super.addComponent
     // so that it is available to AttachListeners
     components.add(c);
-    try {
+    try
+    {
       super.addComponent(c);
-    } catch (IllegalArgumentException e) {
+    }
+    catch (IllegalArgumentException e)
+    {
       components.remove(c);
       throw e;
     }
@@ -108,16 +120,21 @@ public class SortableList extends AbstractLayout
     }
   }
 
-  public void addComponentAsFirst(Component c) {
+  public void addComponentAsFirst(Component c)
+  {
     // If c is already in this, we must remove it before proceeding
     // see ticket #7668
-    if (equals(c.getParent())) {
+    if (equals(c.getParent()))
+    {
       removeComponent(c);
     }
     components.add(0, c);
-    try {
+    try
+    {
       super.addComponent(c);
-    } catch (IllegalArgumentException e) {
+    }
+    catch (IllegalArgumentException e)
+    {
       components.remove(c);
       throw e;
     }
@@ -126,5 +143,11 @@ public class SortableList extends AbstractLayout
   public int getComponentIndex(Component component)
   {
     return components.indexOf(component);
+  }
+
+  @Override
+  protected SortableListState getState()
+  {
+    return (SortableListState) super.getState();
   }
 }

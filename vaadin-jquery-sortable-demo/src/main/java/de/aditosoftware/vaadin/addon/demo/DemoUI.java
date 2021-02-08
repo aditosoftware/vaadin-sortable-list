@@ -5,6 +5,8 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.*;
 import com.vaadin.ui.*;
 import de.aditosoftware.vaadin.addon.SortableList;
+import de.aditosoftware.vaadin.addon.client.shared.SortableOptions;
+import de.aditosoftware.vaadin.addon.configuration.SortableOptionsBuilder;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -23,9 +25,14 @@ public class DemoUI extends UI
   @Override
   protected void init(VaadinRequest request)
   {
+    final SortableOptions options = new SortableOptionsBuilder()
+        .setDraggable(".list-bar")
+        //.setHandle(".bar-handle")
+        .setMirrorYAxis(true)
+        .build();
 
     // Initialize our new UI component
-    final SortableList list = new SortableList();
+    final SortableList list = new SortableList(options);
     list.addStyleName("sortable-list");
 
     list.addComponent(getBar(1));
@@ -43,6 +50,7 @@ public class DemoUI extends UI
 
     Label label = new Label();
     label.setIcon(VaadinIcons.CIRCLE);
+    label.addStyleName("bar-handle");
     layout.addComponent(label);
     layout.addComponent(new Label("Container Number " + number));
 

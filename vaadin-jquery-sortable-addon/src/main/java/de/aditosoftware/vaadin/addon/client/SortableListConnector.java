@@ -1,12 +1,15 @@
 package de.aditosoftware.vaadin.addon.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.*;
+import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.*;
 import com.vaadin.shared.ui.Connect;
 import de.aditosoftware.vaadin.addon.SortableList;
 import de.aditosoftware.vaadin.addon.client.adapter.SortableAdapter;
 import de.aditosoftware.vaadin.addon.client.resources.SortableResourceLoader;
+import de.aditosoftware.vaadin.addon.client.shared.SortableListState;
 
 @Connect(SortableList.class)
 public class SortableListConnector extends AbstractLayoutConnector
@@ -20,9 +23,23 @@ public class SortableListConnector extends AbstractLayoutConnector
     super.init();
     // Make sure Sortable is loaded and available.
     SortableResourceLoader.ensureInitialized();
+  }
+
+  @Override
+  public void onStateChanged(StateChangeEvent stateChangeEvent)
+  {
+    super.onStateChanged(stateChangeEvent);
+
+    GWT.log(getState().options.getDraggable());
 
     // Configure the element of the container with Sortable.
-    SortableAdapter.configureSortable(getWidget().getElement());
+    SortableAdapter.configureSortable(getWidget().getElement(), getState().options);
+  }
+
+  @Override
+  public SortableListState getState()
+  {
+    return (SortableListState) super.getState();
   }
 
   @Override

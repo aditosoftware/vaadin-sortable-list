@@ -38,15 +38,16 @@ $darkgreen: darken($green, 30%);
 .sortable-list {
 	display: flex;
 	flex-direction: column;
+}
 
-	> .list-bar {
-		padding: 1rem 2rem;
-		background-color: #EEE;
-		border-radius: .25rem;
-		width: 400px;
 
-		&:not(:last-child) {
-			margin-bottom: 1rem;
-		}
+.list-bar {
+	padding: 1rem 2rem;
+	background-color: #EEE;
+	border-radius: .25rem;
+	width: 400px;
+
+	&:not(:last-child) {
+		margin-bottom: 1rem;
 	}
 }
