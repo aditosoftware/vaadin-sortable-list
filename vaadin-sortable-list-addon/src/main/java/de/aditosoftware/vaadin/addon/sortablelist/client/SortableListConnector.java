@@ -1,27 +1,26 @@
 package de.aditosoftware.vaadin.addon.sortablelist.client;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.*;
+import com.vaadin.client.ComponentConnector;
+import com.vaadin.client.ConnectorHierarchyChangeEvent;
+import com.vaadin.client.Profiler;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.AbstractLayoutConnector;
 import com.vaadin.client.ui.VCssLayout;
 import com.vaadin.shared.ui.Connect;
 import de.aditosoftware.vaadin.addon.sortablelist.SortableList;
-import de.aditosoftware.vaadin.addon.sortablelist.client.adapter.SortableAdapter;
+import de.aditosoftware.vaadin.addon.sortablelist.client.bindings.SortableBindings;
+import de.aditosoftware.vaadin.addon.sortablelist.client.bindings.SortableInstance;
 import de.aditosoftware.vaadin.addon.sortablelist.client.resources.SortableResourceLoader;
 import de.aditosoftware.vaadin.addon.sortablelist.client.rpc.SortableListServerRpc;
 
 @Connect(SortableList.class)
 public class SortableListConnector extends AbstractLayoutConnector {
-    private final FastStringMap<VCaption> childIdToCaption = FastStringMap
-            .create();
-
-    private boolean initialized = false;
+    private SortableInstance currentSortableInstance;
 
     @Override
     protected void init() {
         super.init();
+
         // Make sure Sortable is loaded and available.
         SortableResourceLoader.ensureInitialized();
     }
@@ -30,14 +29,19 @@ public class SortableListConnector extends AbstractLayoutConnector {
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);
 
-        if (!initialized) {
-            // Configure the element of the container with Sortable.
-            JavaScriptObject sortable = SortableAdapter.configureSortable(getWidget().getElement(), getState());
-            SortableAdapter.addSortableSortListener(sortable, pO -> {
-                getRpcProxy(SortableListServerRpc.class).sorted(pO.oldIndex, pO.newIndex);
-            });
-            initialized = true;
+        if (currentSortableInstance != null) {
+            // If there is currently a Sortable instance, we just destroy it entirely.
+            SortableBindings.destroySortable(currentSortableInstance);
         }
+
+        // Create a new Sortable instance for the element of this connector.
+        SortableInstance sortable = SortableBindings.createSortable(getWidget().getElement(), getState());
+
+        // Create a listener for when the user stop sorting.
+        SortableBindings.addSortableStopListener(sortable, pO -> {
+            // Send the new index of the element to the server to persist the location.
+            getRpcProxy(SortableListServerRpc.class).sorted(pO.oldIndex, pO.newIndex);
+        });
     }
 
     @Override
@@ -58,11 +62,6 @@ public class SortableListConnector extends AbstractLayoutConnector {
                 continue;
             }
             getWidget().remove(child.getWidget());
-            VCaption vCaption = childIdToCaption.get(child.getConnectorId());
-            if (vCaption != null) {
-                childIdToCaption.remove(child.getConnectorId());
-                getWidget().remove(vCaption);
-            }
         }
         Profiler.leave(
                 "CssLayoutConnector.onConnectorHierarchyChange remove old children");
@@ -71,11 +70,6 @@ public class SortableListConnector extends AbstractLayoutConnector {
                 "CssLayoutConnector.onConnectorHierarchyChange add children");
         int index = 0;
         for (ComponentConnector child : getChildComponents()) {
-            VCaption childCaption = childIdToCaption
-                    .get(child.getConnectorId());
-            if (childCaption != null) {
-                getWidget().addOrMove(childCaption, index++);
-            }
             getWidget().addOrMove(child.getWidget(), index++);
         }
         Profiler.leave(
@@ -85,30 +79,12 @@ public class SortableListConnector extends AbstractLayoutConnector {
     }
 
     @Override
-    public void updateCaption(ComponentConnector child) {
-        Widget childWidget = child.getWidget();
-        int widgetPosition = getWidget().getWidgetIndex(childWidget);
-
-        String childId = child.getConnectorId();
-        VCaption caption = childIdToCaption.get(childId);
-        if (VCaption.isNeeded(child)) {
-            if (caption == null) {
-                caption = new VCaption(child, getConnection());
-                childIdToCaption.put(childId, caption);
-            }
-            if (!caption.isAttached()) {
-                // Insert caption at widget index == before widget
-                getWidget().insert(caption, widgetPosition);
-            }
-            caption.updateCaption();
-        } else if (caption != null) {
-            childIdToCaption.remove(childId);
-            getWidget().remove(caption);
-        }
+    public VCssLayout getWidget() {
+        return (VCssLayout) super.getWidget();
     }
 
     @Override
-    public VCssLayout getWidget() {
-        return (VCssLayout) super.getWidget();
+    public void updateCaption(ComponentConnector connector) {
+        // Not implemented.
     }
 }
