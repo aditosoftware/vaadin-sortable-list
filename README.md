@@ -1,4 +1,4 @@
-# Sortable List addon for Vaadin 8
+# Sortable List add-on for Vaadin 8
 Provides a component which lets the user sort its children components. This is basically just a wrapper for Sortable of [Shopify/draggable](https://github.com/Shopify/draggable).
 
 ## Download release
