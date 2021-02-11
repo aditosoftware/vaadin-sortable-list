@@ -1,12 +1,12 @@
-package de.aditosoftware.vaadin.addon.demo;
+package de.aditosoftware.vaadin.addon.sortablelist.demo;
 
 import com.vaadin.annotations.*;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.*;
 import com.vaadin.ui.*;
-import de.aditosoftware.vaadin.addon.SortableList;
-import de.aditosoftware.vaadin.addon.client.shared.SortableOptions;
-import de.aditosoftware.vaadin.addon.configuration.SortableOptionsBuilder;
+import de.aditosoftware.vaadin.addon.sortablelist.SortableList;
+import de.aditosoftware.vaadin.addon.sortablelist.client.shared.SortableOptions;
+import de.aditosoftware.vaadin.addon.sortablelist.configuration.SortableOptionsBuilder;
 
 import javax.servlet.annotation.WebServlet;
 

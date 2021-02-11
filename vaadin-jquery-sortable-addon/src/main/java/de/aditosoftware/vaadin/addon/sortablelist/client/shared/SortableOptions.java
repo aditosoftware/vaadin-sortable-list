@@ -1,4 +1,4 @@
-package de.aditosoftware.vaadin.addon.client.shared;
+package de.aditosoftware.vaadin.addon.sortablelist.client.shared;
 
 import java.io.Serializable;
 
@@ -11,17 +11,19 @@ public class SortableOptions implements Serializable
   // Mirror plugin.
   public boolean mirrorXAxis;
   public boolean mirrorYAxis;
+  public boolean mirrorConstrainDimensions;
 
   public SortableOptions()
   {
   }
 
-  public SortableOptions(String pDraggable, String pHandle, boolean pMirrorXAxis, boolean pMirrorYAxis)
+  public SortableOptions(String pDraggable, String pHandle, boolean pMirrorXAxis, boolean pMirrorYAxis, boolean pMirrorConstrainDimensions)
   {
     draggable = pDraggable;
     handle = pHandle;
     mirrorXAxis = pMirrorXAxis;
     mirrorYAxis = pMirrorYAxis;
+    mirrorConstrainDimensions = pMirrorConstrainDimensions;
   }
 
   public String getDraggable()
@@ -42,5 +44,10 @@ public class SortableOptions implements Serializable
   public boolean isMirrorYAxis()
   {
     return mirrorYAxis;
+  }
+
+  public boolean isMirrorConstrainDimensions()
+  {
+    return mirrorConstrainDimensions;
   }
 }

@@ -1,4 +1,4 @@
-package de.aditosoftware.vaadin.addon.client;
+package de.aditosoftware.vaadin.addon.sortablelist.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
@@ -6,16 +6,18 @@ import com.vaadin.client.*;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.*;
 import com.vaadin.shared.ui.Connect;
-import de.aditosoftware.vaadin.addon.SortableList;
-import de.aditosoftware.vaadin.addon.client.adapter.SortableAdapter;
-import de.aditosoftware.vaadin.addon.client.resources.SortableResourceLoader;
-import de.aditosoftware.vaadin.addon.client.shared.SortableListState;
+import de.aditosoftware.vaadin.addon.sortablelist.SortableList;
+import de.aditosoftware.vaadin.addon.sortablelist.client.adapter.SortableAdapter;
+import de.aditosoftware.vaadin.addon.sortablelist.client.resources.SortableResourceLoader;
+import de.aditosoftware.vaadin.addon.sortablelist.client.shared.SortableListState;
 
 @Connect(SortableList.class)
 public class SortableListConnector extends AbstractLayoutConnector
 {
   private final FastStringMap<VCaption> childIdToCaption = FastStringMap
       .create();
+
+  private boolean initialized = false;
 
   @Override
   protected void init()
@@ -31,9 +33,14 @@ public class SortableListConnector extends AbstractLayoutConnector
     super.onStateChanged(stateChangeEvent);
 
     GWT.log(getState().options.getDraggable());
+    GWT.log(getWidget().getElement().toString());
 
-    // Configure the element of the container with Sortable.
-    SortableAdapter.configureSortable(getWidget().getElement(), getState().options);
+    if (!initialized)
+    {
+      // Configure the element of the container with Sortable.
+      SortableAdapter.configureSortable(getWidget().getElement(), getState().options);
+      initialized = true;
+    }
   }
 
   @Override
@@ -45,6 +52,8 @@ public class SortableListConnector extends AbstractLayoutConnector
   @Override
   public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent event)
   {
+    GWT.log("Connector hierarchy changed");
+
     Profiler.enter("CssLayoutConnector.onConnectorHierarchyChange");
 
     // Detach old child widgets and possibly their caption

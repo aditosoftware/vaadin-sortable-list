@@ -1,4 +1,4 @@
-package de.aditosoftware.vaadin.addon.client.resources;
+package de.aditosoftware.vaadin.addon.sortablelist.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.*;

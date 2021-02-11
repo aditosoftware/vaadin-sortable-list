@@ -1,4 +1,4 @@
-package de.aditosoftware.vaadin.addon.client.shared;
+package de.aditosoftware.vaadin.addon.sortablelist.client.shared;
 
 import com.vaadin.shared.ui.AbstractLayoutState;
 

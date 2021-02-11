@@ -4,7 +4,4 @@
 
 	<!-- Inherit DefaultWidgetSet -->
 	<inherits name="com.vaadin.DefaultWidgetSet" />
-
-	<!-- Widget styles in public -directory -->
-	<stylesheet src="vaadin-jquery-sortable/styles.css"/>
 </module>
