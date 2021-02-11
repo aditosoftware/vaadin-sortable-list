@@ -1,6 +1,6 @@
 package de.aditosoftware.vaadin.addon.sortablelist.client;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.*;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.*;
 import com.vaadin.client.communication.StateChangeEvent;
@@ -38,7 +38,8 @@ public class SortableListConnector extends AbstractLayoutConnector
     if (!initialized)
     {
       // Configure the element of the container with Sortable.
-      SortableAdapter.configureSortable(getWidget().getElement(), getState().options);
+      JavaScriptObject sortable = SortableAdapter.configureSortable(getWidget().getElement(), getState().options);
+      SortableAdapter.addSortableSortListener(sortable, pO -> GWT.log(pO.toString()));
       initialized = true;
     }
   }
