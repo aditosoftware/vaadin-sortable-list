@@ -1,4 +1,4 @@
-package de.aditosoftware.vaadin.addon.sortablelist;
+package de.aditosoftware.vaadin.addon.sortablelist.events;
 
 import com.vaadin.event.ConnectorEventListener;
 import com.vaadin.shared.Registration;
@@ -9,19 +9,19 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 
 public interface SortableListEvents {
-    public interface SortListener extends ConnectorEventListener {
-        public static final Method onSortMethod = ReflectTools.findMethod(
+    interface SortListener extends ConnectorEventListener {
+        Method onSortMethod = ReflectTools.findMethod(
                 SortableListEvents.SortListener.class, "onSort",
                 SortableListEvents.SortEvent.class);
 
-        public void onSort(SortEvent sortEvent);
+        void onSort(SortEvent sortEvent);
     }
 
-    public interface SortNotifier extends Serializable {
-        public Registration addSortListener(SortListener listener);
+    interface SortNotifier extends Serializable {
+        Registration addSortListener(SortListener listener);
     }
 
-    public static class SortEvent extends Component.Event {
+    class SortEvent extends Component.Event {
         private final Component sortedComponent;
         private final int oldIndex;
         private final int newIndex;

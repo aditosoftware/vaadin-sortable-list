@@ -5,16 +5,22 @@ import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Component;
 import de.aditosoftware.vaadin.addon.sortablelist.client.SortableListState;
 import de.aditosoftware.vaadin.addon.sortablelist.client.rpc.SortableListServerRpc;
+import de.aditosoftware.vaadin.addon.sortablelist.events.SortableListEvents;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+/**
+ * SortableList is a component which can hold multiple children component which can be sorted by the user with
+ * drag and drop.
+ */
 public class SortableList extends AbstractLayout implements SortableListEvents.SortNotifier {
     //Holds all registered components of this layout.
     private final LinkedList<Component> components = new LinkedList<>();
 
     public SortableList() {
+        // Register the Server RPC for this component.
         _registerServerRPC();
     }
 
@@ -205,63 +211,115 @@ public class SortableList extends AbstractLayout implements SortableListEvents.S
         return (SortableListState) super.getState(markAsDirty);
     }
 
+    /**
+     * Defines a CSS selector which selects the draggable elements within this container.
+     * Defaults to ".draggable-source".
+     *
+     * @param pDraggable The CSS selector which selects the draggable elements.
+     */
     public void setDraggable(String pDraggable) {
         getState().draggable = pDraggable;
     }
 
+    /**
+     * Defines a CSS selector which defines the handle element within a draggable. This defaults to null.
+     *
+     * @param pHandle The CSS selector which defines the handle element within the draggable.
+     */
     public void setHandle(String pHandle) {
         getState().handle = pHandle;
     }
 
+    /**
+     * Defines if the user can drag the mirror on the X axis. Defaults to true.
+     *
+     * @param pValue If the mirror can be moved on the X axis.
+     */
     public void setMirrorXAxis(boolean pValue) {
         getState().mirrorXAxis = pValue;
     }
 
+    /**
+     * Defines if the user can drag the mirror on the Y axis. Defaults to true.
+     *
+     * @param pValue If the mirror can be moved on the Y axis.
+     */
     public void setMirrorYAxis(boolean pValue) {
         getState().mirrorYAxis = pValue;
     }
 
+    /**
+     * Defines if the height and width of the source element shall be applied to the mirror. Defaults to false.
+     *
+     * @param pValue If the height and width of the source element shall be applied to the mirror.
+     */
     public void setMirrorConstrainDimensions(boolean pValue) {
         getState().mirrorConstrainDimensions = pValue;
     }
 
+    /**
+     * Will return the CSS selector which selects the draggable elements within this container.
+     */
     public String getDraggable() {
         return getState(false).draggable;
     }
 
+    /**
+     * Will return the CSS selector which defines the handle element within a draggable.
+     */
     public String getHandle() {
         return getState(false).handle;
     }
 
+    /**
+     * Defines if the user can drag the mirror on the X axis.
+     */
     public boolean getMirrorXAxis() {
         return getState(false).mirrorXAxis;
     }
 
+    /**
+     * Defines if the user can drag the mirror on the Y axis.
+     */
     public boolean getMirrorYAxis() {
         return getState(false).mirrorYAxis;
     }
 
+    /**
+     * Defines if the height and width of the source element shall be applied to the mirror.
+     */
     public boolean getMirrorConstrainDimensions() {
         return getState(false).mirrorConstrainDimensions;
     }
 
+    /**
+     * Will register the Server RPC which will receive the sort event.
+     */
     private void _registerServerRPC() {
-        registerRpc(new SortableListServerRpc() {
-            @Override
-            public void sorted(int oldIndex, int newIndex) {
-                Component oldComponent = getComponent(oldIndex);
-                removeComponent(oldComponent);
-                addComponent(oldComponent, newIndex);
+        // Register the Server RPC and use a lambda as implementation as there is currently just one method.
+        registerRpc((SortableListServerRpc) (oldIndex, newIndex) -> {
+            // Load the component which is being dragged.
+            Component oldComponent = getComponent(oldIndex);
 
-                fireEvent(new SortableListEvents.SortEvent(
-                        SortableList.this, oldComponent,
-                        oldIndex, newIndex
-                ));
+            // Remove the component and add it at the given new index.
+            removeComponent(oldComponent);
+            addComponent(oldComponent, newIndex);
 
-            }
+            // Fire the event that the element has been moved.
+            fireEvent(new SortableListEvents.SortEvent(
+                    SortableList.this, oldComponent,
+                    oldIndex, newIndex
+            ));
+
         }, SortableListServerRpc.class);
     }
 
+    /**
+     * Will add a listener which will be called when the user sorts an item within the list.
+     *
+     * @param listener The listener which will be called on sort.
+     * @return The registration for the listener.
+     */
     @Override
     public Registration addSortListener(SortableListEvents.SortListener listener) {
         return addListener(SortableListEvents.SortEvent.class, listener,
