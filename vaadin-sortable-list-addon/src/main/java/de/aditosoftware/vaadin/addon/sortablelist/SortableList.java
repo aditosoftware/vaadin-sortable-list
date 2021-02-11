@@ -1,5 +1,6 @@
 package de.aditosoftware.vaadin.addon.sortablelist;
 
+import com.vaadin.shared.Registration;
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Component;
 import de.aditosoftware.vaadin.addon.sortablelist.client.SortableListState;
@@ -9,7 +10,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class SortableList extends AbstractLayout {
+public class SortableList extends AbstractLayout implements SortableListEvents.SortNotifier {
     //Holds all registered components of this layout.
     private final LinkedList<Component> components = new LinkedList<>();
 
@@ -252,7 +253,18 @@ public class SortableList extends AbstractLayout {
                 removeComponent(oldComponent);
                 addComponent(oldComponent, newIndex);
 
+                fireEvent(new SortableListEvents.SortEvent(
+                        SortableList.this, oldComponent,
+                        oldIndex, newIndex
+                ));
+
             }
         }, SortableListServerRpc.class);
+    }
+
+    @Override
+    public Registration addSortListener(SortableListEvents.SortListener listener) {
+        return addListener(SortableListEvents.SortEvent.class, listener,
+                SortableListEvents.SortListener.onSortMethod);
     }
 }

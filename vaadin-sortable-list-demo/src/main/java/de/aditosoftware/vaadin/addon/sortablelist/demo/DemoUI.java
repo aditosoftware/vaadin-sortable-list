@@ -33,6 +33,9 @@ public class DemoUI extends UI {
         list.addStyleName("sortable-list");
         list.setDraggable(".list-bar");
         list.setMirrorYAxis(true);
+        list.addSortListener(sortEvent -> {
+            System.out.println("Sorted");
+        });
 
         list.addComponent(getBar(1));
         list.addComponent(getBar(2));
