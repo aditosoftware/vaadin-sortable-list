@@ -6,7 +6,7 @@
     <artifactId>vaadin-sortable-list</artifactId>
     <packaging>jar</packaging>
     <version>0.1.0</version>
-    <name>Sortable List Add-on</name>
+    <name>Sortable List</name>
 
     <prerequisites>
         <maven>3</maven>
