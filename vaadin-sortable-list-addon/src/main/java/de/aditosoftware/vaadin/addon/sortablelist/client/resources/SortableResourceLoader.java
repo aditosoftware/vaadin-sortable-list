@@ -2,8 +2,7 @@ package de.aditosoftware.vaadin.addon.sortablelist.client.resources;
 
 import com.google.gwt.core.client.GWT;
 
-public class SortableResourceLoader
-{
+public class SortableResourceLoader {
   public static final SortableResourceLoader INSTANCE = GWT.create(SortableResourceLoader.class);
 
   private static boolean initialized = false;
@@ -15,7 +14,7 @@ public class SortableResourceLoader
     }
   }
 
-  private void initializeResources () {
+  private void initializeResources() {
     inject(SortableResources.INSTANCE.sortableCore().getText());
   }
 

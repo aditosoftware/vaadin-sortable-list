@@ -7,19 +7,21 @@ import de.aditosoftware.vaadin.addon.sortablelist.client.SortableListState;
 import java.util.function.Consumer;
 
 /**
- * Implements the bindings to Sortable. The methods within this class will just be used to access the actual
- * Sortable through jsni.
+ * Implements the bindings to Sortable. The methods within this class will just be used to access
+ * the actual Sortable through jsni.
  */
 public class SortableBindings {
-    /**
-     * Will create a new Sortable instance with the given {@link Element} as container.
-     * The {@link SortableListState} is also required to access the configuration properties.
-     *
-     * @param pContainerElement The container element for which the Sortable instance shall be created.
-     * @param pState            The state of the widget for configuration.
-     * @return The Sortable instance wrapped in a {@link SortableInstance}.
-     */
-    public static native SortableInstance createSortable(Element pContainerElement, SortableListState pState) /*-{
+  /**
+   * Will create a new Sortable instance with the given {@link Element} as container. The {@link
+   * SortableListState} is also required to access the configuration properties.
+   *
+   * @param pContainerElement The container element for which the Sortable instance shall be
+   *     created.
+   * @param pState The state of the widget for configuration.
+   * @return The Sortable instance wrapped in a {@link SortableInstance}.
+   */
+  public static native SortableInstance createSortable(
+      Element pContainerElement, SortableListState pState) /*-{
         var sortable = $wnd.Sortable;
 
         var constraintDimensions = false;
@@ -42,14 +44,15 @@ public class SortableBindings {
         return @de.aditosoftware.vaadin.addon.sortablelist.client.bindings.SortableInstance::new(Lcom/google/gwt/core/client/JavaScriptObject;)(sortableInstance);
     }-*/;
 
-    /**
-     * Will add a 'sortable:stop' listener to the given Sortable instance. The caller has to make sure the type of
-     * the given object is a Sortable.
-     *
-     * @param pSortableInstance The Sortable instance as a {@link JavaScriptObject}
-     * @param pListener         The listener which will be called on sort.
-     */
-    public static native void addSortableStopListener(SortableInstance pSortableInstance, Consumer<SortableBindingStopEvent> pListener) /*-{
+  /**
+   * Will add a 'sortable:stop' listener to the given Sortable instance. The caller has to make sure
+   * the type of the given object is a Sortable.
+   *
+   * @param pSortableInstance The Sortable instance as a {@link JavaScriptObject}
+   * @param pListener The listener which will be called on sort.
+   */
+  public static native void addSortableStopListener(
+      SortableInstance pSortableInstance, Consumer<SortableBindingStopEvent> pListener) /*-{
         // Return if null or undefined.
         if (!pSortableInstance) {
             return;
@@ -65,12 +68,13 @@ public class SortableBindings {
         });
     }-*/;
 
-    /**
-     * Will destroy the given Sortable instance. The caller has to make sure the type of the given object is a Sortable.
-     *
-     * @param pSortableInstance The Sortable instance as a {@link JavaScriptObject}.
-     */
-    public static native void destroySortable(SortableInstance pSortableInstance) /*-{
+  /**
+   * Will destroy the given Sortable instance. The caller has to make sure the type of the given
+   * object is a Sortable.
+   *
+   * @param pSortableInstance The Sortable instance as a {@link JavaScriptObject}.
+   */
+  public static native void destroySortable(SortableInstance pSortableInstance) /*-{
         // Return if null or undefined.
         if (!pSortableInstance) {
             return
